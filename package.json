@@ -1,0 +1,43 @@
+{
+  "name": "node-red-contrib-firebase",
+  "version": "1.1.1",
+  "description": "Node-Red module for interacting with Firebase",
+  "author": "Austin Eldridge <Austin.Eldridge@gmail.com>",
+  "contributors": [
+    {
+      "name": "Austin Eldridge",
+      "email": "Austin.Eldridge@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "firebase": "2.4.1",
+    "firebase-token-generator": "^2.0.0",
+    "follow-redirects": "0.0.7"
+  },
+  "keywords": [
+    "node-red",
+    "firebase"
+  ],
+  "node-red": {
+    "nodes": {
+      "firebase_config": "firebase/firebase_config.js",
+      "firebase_modify": "firebase/firebase_modify.js",
+      "firebase_once": "firebase/firebase_once.js",
+      "firebase_on": "firebase/firebase_on.js",
+      "firebase_ondisconnect": "firebase/firebase_ondisconnect.js",
+      "firebase_auth": "firebase/firebase_auth.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deldrid1/node-red-contrib-firebase"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deldrid1/node-red-contrib-firebase/issues"
+  },
+  "homepage": "https://github.com/deldrid1/node-red-contrib-firebase"
+}

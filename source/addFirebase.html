@@ -1,0 +1,39 @@
+<script type="text/x-red" data-template-name="addFirebase">
+  <div class="form-row">
+    <label for="node-input-firebase"><i class="fa fa-cloud"></i> Firebase</label>
+    https://
+    <input class="input-append-left" type="text" id="node-input-firebase" placeholder="your-firebase" style="width: 28%">
+    .firebaseio.com/
+  </div> 
+  <div class="form-row"> 
+    <label for="node-input-data"><i class="fa fa-text"></i> Firebase</label>
+    <textarea id="node-input-data" rows="4" cols="50" style="margin: 0px; width: 287px; height: 97px;"></textarea>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="addFirebase">
+  <p>Add data to Firebase</p>
+  <!-- <p>The urlFolder is taken template from url note box by the node <code>msg.urlFolder</code> property.</p>
+  <p>The message sent from the node will have properties:
+      <ul>        
+        <li><b>payload</b> - infomation folder in Box</li>
+      </ul>
+  </p> -->
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('addFirebase',{
+      category: 'Firebase',
+      color:"#ffb37a",
+      defaults: {
+        firebase: {value: ""},
+        data: {value: ""}
+      },
+      inputs:1,
+      outputs:1,
+      icon: "firebase.png",
+      align: "left",
+      label: 'Add Firebase',
+      paletteLabel: 'Add Firebase'
+  });
+</script>

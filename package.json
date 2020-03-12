@@ -1,31 +1,21 @@
 {
-  "name": "node-red-contrib-firebase",
-  "version": "1.1.1",
-  "description": "Node-Red module for interacting with Firebase",
-  "author": "Austin Eldridge <Austin.Eldridge@gmail.com>",
-  "contributors": [
-    {
-      "name": "Austin Eldridge",
-      "email": "Austin.Eldridge@gmail.com"
-    }
-  ],
+  "name": "node-red-contrib-firebase-data",
+  "version": "0.0.2",
+  "author": "minh hien <taminhhien.mor.vn@gmail.com>",
+  "description": "The simplest of simple nodes with box note",
   "dependencies": {
-    "firebase": "2.4.1",
-    "firebase-token-generator": "^2.0.0",
-    "follow-redirects": "0.0.7"
+    "request": "^2.88.0"
   },
   "keywords": [
     "node-red",
-    "firebase"
+    "firebase",
+    "firebase-data",
+    "firebase data",
+    "firebase-data realtime"
   ],
   "node-red": {
     "nodes": {
-      "firebase_config": "firebase/firebase_config.js",
-      "firebase_modify": "firebase/firebase_modify.js",
-      "firebase_once": "firebase/firebase_once.js",
-      "firebase_on": "firebase/firebase_on.js",
-      "firebase_ondisconnect": "firebase/firebase_ondisconnect.js",
-      "firebase_auth": "firebase/firebase_auth.js"
+      "firebase_config": "source/addFirebase.js"
     }
   },
   "scripts": {
@@ -33,11 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/deldrid1/node-red-contrib-firebase"
+    "url": "https://github.com/taminhhienmor/node-red-contrib-firebase-data"
   },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/deldrid1/node-red-contrib-firebase/issues"
-  },
-  "homepage": "https://github.com/deldrid1/node-red-contrib-firebase"
+  "license": "MIT"
 }

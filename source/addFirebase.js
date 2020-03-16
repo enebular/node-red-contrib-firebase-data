@@ -6,25 +6,42 @@ module.exports = function(RED) {
     this.box = RED.nodes.getNode(n.box);
     var node = this;
     var firebase = n.firebase
-    var newObj = JSON.parse(n.data)
-
+    var newObj = n.data
+    var methodValue = n.method
+    var childPath = n.childpath || ""
+    var jsonPath = ".json"
     
-    node.on("input", function(msg) {
-      // var newObj =  msg.payload
+    
+    node.on("input", function(msg) {      
+      if(newObj == "") {
+        newObj = msg.payload       
+      }      
+      
+      if (typeof newObj != 'object') newObj = JSON.parse(newObj);
+
+      if (methodValue == "msg.method" || methodValue == "") {
+        methodValue = msg.method
+      }
+
       var opts = {
-        method: "POST",
-        url: "https://" + firebase + ".firebaseio.com/.json",
+        method: methodValue,
+        url: "https://" + firebase + ".firebaseio.com/" + childPath + jsonPath,
         body: JSON.stringify(newObj)
       };
       
       request(opts, function (error, response, body) {
           if (error) {
-              node.error(error,{});
-              node.status({fill:"red",shape:"ring",text:"calendar.status.failed"});
-              return;
-          }         
+            node.error(error,{});
+            node.status({fill:"red",shape:"ring",text:"failed"});
+            return;
+          }
+          
+          if (methodValue == "delete"){
+            msg.payload = "Delete success!"
+          } else {
+            msg.payload = JSON.parse(body)
+          }                     
                       
-          msg.payload = JSON.parse(body) || "Fail"            
           node.send(msg);
       })      
     });

@@ -1,5 +1,17 @@
 <script type="text/x-red" data-template-name="addFirebase">
   <div class="form-row">
+    <label for="node-input-firebaseconfig"><i class="fa fa-database"></i> Firebase</label>
+    <input type="text" id="node-input-firebaseconfig">
+  </div>
+  <div class="form-row">
+    <label for="node-input-client_email"><i class="fa fa-envelope"></i> client_email</label>
+    <input type="text" id="node-input-client_email">
+  </div>
+  <div class="form-row">
+    <label for="node-input-private_key"><i class="fa fa-key"></i> private_key</label>
+    <input type="text" id="node-input-private_key">
+  </div>
+  <div class="form-row">
     <label for="node-input-firebase"><i class="fa fa-cloud"></i> Firebase</label>
     https://
     <input type="text" id="node-input-firebase" placeholder="your-firebase" style="width: 28%">
@@ -45,6 +57,9 @@
       color:"#fdd0a2",
       defaults: {
         firebase: {value: "", required: true},
+        // firebaseconfig:  {type:'firebase config',required:true},
+        client_email: {value:""},
+        private_key: {value:""},
         data: {value: ""},
         childpath: {value: ""},
         method: {value: 'get', required: true}

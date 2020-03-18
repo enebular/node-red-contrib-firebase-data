@@ -17,7 +17,8 @@
   ],
   "node-red": {
     "nodes": {
-      "addFirebase": "source/addFirebase.js"
+      "addFirebase": "source/addFirebase.js",
+      "firebaseCertificate": "source/firebaseCertificate.js"
     }
   },
   "scripts": {

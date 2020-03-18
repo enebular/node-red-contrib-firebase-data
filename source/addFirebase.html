@@ -1,21 +1,7 @@
 <script type="text/x-red" data-template-name="addFirebase">
-  <!-- <div class="form-row">
+  <div class="form-row">
     <label for="node-input-firebaseCertificate"><i class="fa fa-database"></i> Firebase</label>
     <input type="text" id="node-input-firebaseCertificate">
-  </div>
-  <div class="form-row">
-    <label for="node-input-client_email"><i class="fa fa-envelope"></i> client_email</label>
-    <input type="text" id="node-input-client_email">
-  </div>
-  <div class="form-row">
-    <label for="node-input-private_key"><i class="fa fa-key"></i> private_key</label>
-    <input type="text" id="node-input-private_key">
-  </div> -->
-  <div class="form-row">
-    <label for="node-input-firebase"><i class="fa fa-cloud"></i> Firebase</label>
-    https://
-    <input type="text" id="node-input-firebase" placeholder="your-firebase" style="width: 28%">
-    .firebaseio.com/
   </div>
   <div class="form-row">
     <label for="node-input-childpath"><i class="fa fa-sitemap"></i> Child Path</label>
@@ -57,9 +43,9 @@
       color:"#fdd0a2",
       defaults: {
         firebase: {value: "", required: true},
-        // firebaseCertificate:  {type:'firebaseCertificate',required:true},
-        // client_email: {value:""},
-        // private_key: {value:""},
+        firebaseCertificate:  {type:'firebaseCertificate',required:true},
+        client_email: {value:""},
+        private_key: {value:""},
         data: {value: ""},
         childpath: {value: ""},
         method: {value: 'get', required: true}
@@ -71,22 +57,22 @@
       label: 'Add Firebase',
       paletteLabel: 'Add Firebase',
       oneditprepare: function() {
-        // $('#node-input-method').on('change', function(){
-        //   switch($(this).val()){
-        //     case "get":
-        //       $('#node-input-data-label').hide();
-        //       break;
-        //     case "delete":
-        //       $('#node-input-data-label').hide();
-        //       break;
-        //     case "msg.method":
-        //       $('#node-input-data-label').hide();
-        //       break;
-        //     default:
-        //       $('#node-input-data-label').show();
-        //       break;
-        //   }
-        // });
+        $('#node-input-method').on('change', function(){
+          switch($(this).val()){
+            case "get":
+              $('#node-input-data-label').hide();
+              break;
+            case "delete":
+              $('#node-input-data-label').hide();
+              break;
+            case "msg.method":
+              $('#node-input-data-label').hide();
+              break;
+            default:
+              $('#node-input-data-label').show();
+              break;
+          }
+        });
       }
   });
 </script>

@@ -1,5 +1,4 @@
-<script type="text/x-red" data-template-name="firebase config" >
-
+<script type="text/x-red" data-template-name="firebaseCertificate">
     <div class="form-row">
         <label for="node-config-input-firebaseurl"><i class="fa fa-cloud"></i> Firebase</label>
         https://
@@ -38,17 +37,6 @@
       <a href="#" class="btn btn-mini" id="node-input-add-jwt-claim" style="margin-top: 4px;"><i class="fa fa-plus"></i> add additional claims</a>
     </div>
 
-    <!-- //TODO: this node would be formatted nicer if #node-inpu-query-container-div was hidden until a query was added (or already present)... -->
-    <!-- Query Dialog Box -->
-    <div id="node-input-jwt-claims-overall" class="form-row node-input-jwt-claims-overall-row hidden">
-      <!-- <ol id="node-input-jwt-claims" style=" list-style-type:none; margin: 0;"></ol> -->
-
-        <div id="node-input-jwt-claims-container-div" style="box-sizing: border-box; border-radius: 5px; max-height: 200px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
-          <ol id="node-input-jwt-claims-container" style=" list-style-type:none; margin: 0;"></ol>
-        </div>
-    </div>
-
-
     <!-- Email login -->
     <div class="form-row login-row login-row-email hidden" id="login-row-email">
         <label for="node-config-input-email"><i class="fa fa-envelope"></i> Email</label>
@@ -58,21 +46,22 @@
         <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
         <input class="input-append-left" type="password" id="node-config-input-password" placeholder="password">
     </div>
-
-    <!--   <div id="alertRow" />  -->
-
-    <!-- Tips -->
-    <!-- <div class="form-tips">
-      <p>Enter your Firebase credentials above</p>
-    </div> -->
-
-</script>
-
-<script type="text/javascript">
-    (function () {
-
-        RED.nodes.registerType('firebase config', {
-            category: 'config',
+  </script>
+  
+  <script type="text/x-red" data-help-name="firebaseCertificate">
+    <p>Add data to Firebase</p>
+    <!-- <p>The urlFolder is taken template from url note box by the node <code>msg.urlFolder</code> property.</p>
+    <p>The message sent from the node will have properties:
+        <ul>        
+          <li><b>payload</b> - infomation folder in Box</li>
+        </ul>
+    </p> -->
+  </script>
+  
+  
+    <script type="text/javascript">
+    RED.nodes.registerType('firebaseCertificate',{
+        category: 'config',
 
             color: "#ffb37a",
 
@@ -88,7 +77,6 @@
                 password: {type: 'password'},
                 jwtClaims: {type: 'text'}
             },
-
 
             label: function () {
                 //return typeof this.appid ? 'Firebase ' + this.appid : 'Firebase ' + this.email;
@@ -343,6 +331,8 @@
             },
 
             exportable: false
-        });
-    })();
+    });
 </script>
+
+  
+  

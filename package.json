@@ -1,13 +1,11 @@
 {
   "name": "node-red-contrib-firebase-data",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "minh hien <taminhhien.mor.vn@gmail.com>",
   "description": "The simplest of simple nodes with box note",
   "dependencies": {
     "request": "^2.88.0",
-    "firebase": "7.11.0",
     "googleapis": "48.0.0",
-    "firebase-token-generator": "^2.0.0",
     "follow-redirects": "0.0.7"
   },
   "keywords": [

@@ -5,7 +5,7 @@ module.exports = function(RED) {
     var node = this;
     //
 
-    this.firebaseurl = "https://" + n.firebaseurl + ".firebaseio.com";
+    this.firebaseurl = "https://" + n.firebaseurl + ".firebaseio.com/";
     this.loginType = n.loginType;
     this.secret = this.credentials.secret;
     this.email = this.credentials.email;
@@ -15,7 +15,8 @@ module.exports = function(RED) {
     credentials: {
         loginType: {type: 'text'},
         secret: {type: 'password'},
-        email: {type: 'text'}
+        email: {type: 'text'},
+        firebaseurl: {type: 'text'},
     }
   });
 };

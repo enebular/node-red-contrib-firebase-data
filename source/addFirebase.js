@@ -7,7 +7,7 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, n);
     this.box = RED.nodes.getNode(n.box);
     var node = this;
-    var firebase = n.firebase
+    
     var newObj = n.data || {}
     var methodValue = n.method
     var childPath = n.childpath || ""
@@ -50,7 +50,7 @@ module.exports = function (RED) {
             return;
           } else {
             var accessToken = tokens.access_token;
-            url_params = "https://" + firebase + ".firebaseio.com/" + childPath + jsonPath+"?access_token=" + accessToken
+            url_params = firebaseCertificate.firebaseurl + childPath + jsonPath+"?access_token=" + accessToken
             var opts = {
               method: methodValue,
               url: url_params,
@@ -75,7 +75,7 @@ module.exports = function (RED) {
           }
         });        
       } else {
-        url_params = "https://" + firebase + ".firebaseio.com/" + childPath + jsonPath
+        url_params = firebaseCertificate.firebaseurl + childPath + jsonPath
         var opts = {
           method: methodValue,
           url: url_params,

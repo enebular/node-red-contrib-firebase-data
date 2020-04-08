@@ -1,78 +1,97 @@
 <script type="text/x-red" data-template-name="addFirebase">
-  <div class="form-row">
-    <label for="node-input-firebaseCertificate"><i class="fa fa-database"></i> Firebase</label>
-    <input type="text" id="node-input-firebaseCertificate">
-  </div>
-  <div class="form-row">
-    <label for="node-input-childpath"><i class="fa fa-sitemap"></i> Child Path</label>
-    <input type="text" id="node-input-childpath" placeholder="path-to/the/data">
-  </div>
-  <div class="form-row">
-    <label for="node-input-method"><i class="fa fa-terminal"></i> Method</label>
-    <select id="node-input-method" type="text" style="width:30%" text-center>
-      <option value="get" default>get</option>
-      <option value="put">set</option>
-      <option value="post">push</option>
-      <option value="patch">update</option>
-      <option value="delete">remove</option>
-      <option value="put">setPriority</option>
-      <option value="put">setWithPriority</option>
-      <option value="msg.method">[msg.method]</option>
-    </select>()
-  </div> 
-  <div class="form-row" id="node-input-data-label"> 
-    <label for="node-input-data"><i class="fa fa-code"></i> Data</label>
-    <textarea id="node-input-data" rows="4" cols="50" style="margin: 0px; width: 287px; height: 97px;"></textarea>
-  </div>
+    <div class="form-row">
+        <label for="node-input-firebaseCertificate"><i class="fa fa-database"></i> Firebase</label>
+        <input type="text" id="node-input-firebaseCertificate">
+    </div>
+    <div class="form-row">
+        <label for="node-input-childpath"><i class="fa fa-sitemap"></i> Child Path</label>
+        <input type="text" id="node-input-childpath" placeholder="path-to/the/data">
+    </div>
+    <div class="form-row">
+        <label for="node-input-method"><i class="fa fa-terminal"></i> Method</label>
+        <select id="node-input-method" type="text" style="width:30%" text-center>
+        <option value="get" default>get</option>
+        <option value="set">set</option>
+        <option value="push">push</option>
+        <option value="update">update</option>
+        <option value="remove">remove</option>
+        <option value="setPriority">setPriority</option>
+        <option value="setWithPriority">setWithPriority</option>
+        <option value="reanameChildPath">reanameChildPath</option>
+        <option value="msg.method">[msg.method]</option>
+        </select>()
+    </div> 
+    <div class="form-row" id="node-input-data-label"> 
+        <label for="node-input-data"><i class="fa fa-code"></i> Data</label>
+        <textarea id="node-input-data" rows="4" cols="50" style="margin: 0px; width: 287px; height: 97px;"></textarea>
+    </div>
+    <div class="form-row" id="node-input-newchildpath-label">
+        <label for="node-input-newchildpath"><i class="fa fa-sitemap"></i> New Path</label>
+        <input type="text" id="node-input-newchildpath" placeholder="path-to/the/data">
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="addFirebase">
-  <p>Add data to Firebase</p>
-  <!-- <p>The urlFolder is taken template from url note box by the node <code>msg.urlFolder</code> property.</p>
-  <p>The message sent from the node will have properties:
-      <ul>        
-        <li><b>payload</b> - infomation folder in Box</li>
-      </ul>
-  </p> -->
+    <p>Add data to Firebase</p>
+    <!-- <p>The urlFolder is taken template from url note box by the node <code>msg.urlFolder</code> property.</p>
+    <p>The message sent from the node will have properties:
+        <ul>        
+            <li><b>payload</b> - infomation folder in Box</li>
+        </ul>
+    </p> -->
 </script>
 
 
-  <script type="text/javascript">
-  RED.nodes.registerType('addFirebase',{
-      category: 'Firebase',
-      color:"#fdd0a2",
-      defaults: {
-        firebaseCertificate:  {type:'firebaseCertificate',required:true},
-        client_email: {value:""},
-        private_key: {value:""},
-        data: {value: ""},
-        childpath: {value: ""},
-        method: {value: 'get', required: true}
-      },
-      inputs:1,
-      outputs:1,
-      icon: "firebase.png",
-      align: "left",
-      label: 'Add Firebase',
-      paletteLabel: 'Add Firebase',
-      oneditprepare: function() {
-        $('#node-input-method').on('change', function(){
-          switch($(this).val()){
-            case "get":
-              $('#node-input-data-label').hide();
-              break;
-            case "delete":
-              $('#node-input-data-label').hide();
-              break;
-            case "msg.method":
-              $('#node-input-data-label').hide();
-              break;
-            default:
-              $('#node-input-data-label').show();
-              break;
-          }
-        });
-      }
-  });
+<script type="text/javascript">
+    RED.nodes.registerType('addFirebase',{
+        category: 'Firebase',
+        color:"#fdd0a2",
+        defaults: {
+            firebaseCertificate:  {type:'firebaseCertificate',required:true},
+            client_email: {value:""},
+            private_key: {value:""},
+            data: {value: ""},
+            childpath: { value: "", validate: RED.validators.typedInput("propertyType") },
+            propertyType: { value: "str" },
+            method: {value: 'get', required: true},
+            newchildpath: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "firebase.png",
+        align: "left",
+        label: 'Add Firebase',
+        paletteLabel: 'Add Firebase',
+        oneditprepare: function() {
+            $("#node-input-childpath").typedInput({ default: this.propertyType || 'str', types: ['str', 'msg', 'flow', 'global'] });
+            $('#node-input-method').on('change', function(){
+                switch($(this).val()){
+                    case "get":
+                        $('#node-input-data-label').hide();
+                        $('#node-input-newchildpath-label').hide();
+                        break;
+                    case "delete":
+                        $('#node-input-data-label').hide();
+                        $('#node-input-newchildpath-label').hide();
+                        break;
+                    case "msg.method":
+                        $('#node-input-data-label').hide();
+                        $('#node-input-newchildpath-label').hide();
+                        break;
+                    case "reanameChildPath":
+                        $('#node-input-data-label').hide();
+                        $('#node-input-newchildpath-label').show();
+                        break;    
+                    default:
+                        $('#node-input-data-label').show();
+                        $('#node-input-newchildpath-label').hide();
+                        break;
+                }
+            });
+        }, 
+        oneditsave: function () {
+            this.propertyType = $("#node-input-childpath").typedInput('type');
+        }
+    });
 </script>
 

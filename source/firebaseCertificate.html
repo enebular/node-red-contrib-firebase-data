@@ -65,9 +65,10 @@
                 if(this.credentials && this.loginType){
                   switch (this.loginType) {
                       case 'jwt':
-                        str += " - JSON Web Token"
+                        str = "JWT - " + str
                         break;
                       case 'default':
+                        str = "No Auth - " + str
                         break;
                   }
                 }

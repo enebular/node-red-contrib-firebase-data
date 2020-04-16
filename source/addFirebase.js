@@ -20,6 +20,7 @@ module.exports = function (RED) {
         var firebaseCertificate = RED.nodes.getNode(n.firebaseCertificate);
         var jsonPath = ".json"
         var url_params = "";
+        var url_params_childpath = "";
 
         node.on("input", function (msg) {
             node.status({});
@@ -62,10 +63,8 @@ module.exports = function (RED) {
                     childPath = childPathProperty
                     break;
             }
-
-            if (methodValue == "reanameChildPath") {
-                childPath = newchildpath
-            } else if (methodValue == "setPriority" || methodValue == "setWithPriority") {
+            
+            if (methodValue == "setPriority" || methodValue == "setWithPriority") {
                 methodValue = "put"
             } else if (methodValue == "msg.method" || methodValue == "") {
                 methodValue = msg.method
@@ -102,80 +101,85 @@ module.exports = function (RED) {
                     } else {
                         var accessToken = tokens.access_token;
                         url_params = firebaseCertificate.firebaseurl + childPath + jsonPath+"?access_token=" + accessToken
-                        
+                        url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath+"?access_token=" + accessToken
+                        requestData(newObj, methodValue, url_params, url_params_childpath, node, msg)
                     }
                 });        
             } else {
                 url_params = firebaseCertificate.firebaseurl + childPath + jsonPath
-            }
-            if (methodValue == "reanameChildPath") {
-                var optsGet = {
-                    method: "GET",
-                    url: url_params
-                };
-                request(optsGet, function (errorGet, response, bodyGet) {
-                    if (errorGet) {
-                        node.error(errorGet, {});
-                        node.status({fill: "red", shape: "ring", text: "failed"});
-                        return;
-                    } else {
-                        var dataClone = JSON.parse(bodyGet); 
-                        var optsPut = {
-                            method: "PUT",
-                            url: url_params,
-                            body: JSON.stringify(dataClone)
-                        };
-
-                        request(optsPut, function (errorPut, response, bodyPut) {
-                            if (errorPut) {
-                                node.error(errorPut, {});
-                                node.status({fill: "red", shape: "ring", text: "failed"});
-                                return;
-                            } else {
-                                var optsDelete = {
-                                    method: "DELETE",
-                                    url: url_params
-                                };
-    
-                                request(optsDelete, function (errorDelete, response, bodyDelete) {
-                                    if (errorDelete) {
-                                        node.error(errorDelete, {});
-                                        node.status({fill: "red", shape: "ring", text: "failed"});
-                                        return;
-                                    } else {
-                                        msg.payload = JSON.parse(bodyPut);
-                                        node.send(msg);
-                                    }
-                                })
-                            }    
-                        })
-                    }    
-                })
-            } else {
-                var opts = {
-                    method: methodValue,
-                    url: url_params,
-                    body: JSON.stringify(newObj)
-                };
-
-                request(opts, function (error, response, body) {
-                    if (error) {
-                        node.error(error, {});
-                        node.status({fill: "red", shape: "ring", text: "failed"});
-                        return;
-                    } else {
-                        if (methodValue == "delete") {
-                            msg.payload = "Delete success!"
-                            node.send(msg);
-                        } else {
-                            msg.payload =  JSON.parse(body);
-                            node.send(msg);
-                        }
-                    }    
-                })
+                url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath
+                requestData(newObj, methodValue, url_params, url_params_childpath, node, msg)
             }
         });
     }
 
-  RED.nodes.registerType("addFirebase", addFirebase);
+    function requestData(newObj, methodValue, url_params, url_params_childpath, node, msg) {
+        if (methodValue == "reanameChildPath") {
+            var optsGet = {
+                method: "GET",
+                url: url_params
+            };
+            request(optsGet, function (errorGet, response, bodyGet) {
+                if (errorGet) {
+                    node.error(errorGet, {});
+                    node.status({fill: "red", shape: "ring", text: "failed"});
+                    return;
+                } else {
+                    var dataClone = JSON.parse(bodyGet); 
+                    var optsDelete = {
+                        method: "DELETE",
+                        url: url_params
+                    };
+
+                    request(optsDelete, function (errorDelete, response, bodyDelete) {
+                        if (errorDelete) {
+                            node.error(errorDelete, {});
+                            node.status({fill: "red", shape: "ring", text: "failed"});
+                            return;
+                        } else {
+                            var optsPut = {
+                                method: "PUT",
+                                url: url_params_childpath,
+                                body: JSON.stringify(dataClone)
+                            };
+                            request(optsPut, function (errorPut, response, bodyPut) {
+                                if (errorPut) {
+                                    node.error(errorPut, {});
+                                    node.status({fill: "red", shape: "ring", text: "failed"});
+                                    return;
+                                } else {
+                                    msg.payload = JSON.parse(bodyPut);
+                                    node.send(msg);
+                                }    
+                            })
+                        }
+                    })
+                }    
+            })
+        } else {
+            var opts = {
+                method: methodValue,
+                url: url_params,
+                body: JSON.stringify(newObj)
+            };
+
+            request(opts, function (error, response, body) {
+                if (error) {
+                    node.error(error, {});
+                    node.status({fill: "red", shape: "ring", text: "failed"});
+                    return;
+                } else {
+                    if (methodValue == "delete") {
+                        msg.payload = "Delete success!"
+                        node.send(msg);
+                    } else {
+                        msg.payload =  JSON.parse(body);
+                        node.send(msg);
+                    }
+                }    
+            })
+        }
+    }
+
+    RED.nodes.registerType("addFirebase", addFirebase);
 };

@@ -15,9 +15,9 @@
         <option value="push">push</option>
         <option value="update">update</option>
         <option value="remove">remove</option>
+        <option value="reanameChildPath">reanameChildPath</option>
         <option value="setPriority">setPriority</option>
         <option value="setWithPriority">setWithPriority</option>
-        <option value="reanameChildPath">reanameChildPath</option>
         <option value="msg.method">[msg.method]</option>
         </select>()
     </div> 
@@ -33,12 +33,42 @@
 
 <script type="text/x-red" data-help-name="addFirebase">
     <p>Add data to Firebase</p>
-    <!-- <p>The urlFolder is taken template from url note box by the node <code>msg.urlFolder</code> property.</p>
-    <p>The message sent from the node will have properties:
-        <ul>        
-            <li><b>payload</b> - infomation folder in Box</li>
-        </ul>
-    </p> -->
+    <p>
+        1. Get method (GET)
+        If you execute after setting the Child Path, the Child Path data will appear.
+
+        ![get-node](https://cdn.jsdelivr.net/gh/taminhhienmor/node-red-contrib-firebase-data/source/image/get1.png)
+
+        2. Set method (PUT)
+        After inputting data such as {"first": "Jack", "last": "Sparrow"}, if there is already data in the specified Child Path, that data will be lost and updated with the input data.
+
+        ![set-node](https://cdn.jsdelivr.net/gh/taminhhienmor/node-red-contrib-firebase-data/source/image/set1.png)
+
+        3. Push method (POST)
+        For example, Child Path is a list of users, enter {"user_number": "321", "name": "John"}. When executed, the new user will be added to the user list.
+
+        ![push-node](https://cdn.jsdelivr.net/gh/taminhhienmor/node-red-contrib-firebase-data/source/image/push1.png)
+
+        4. Update method (PATCH)
+        Update the existing data with the entered data.
+
+        ![update-node](https://cdn.jsdelivr.net/gh/taminhhienmor/node-red-contrib-firebase-data/source/image/update1.png)
+
+        5. Remove method (DELETE)
+        Delete Child Path.
+
+        ![remove-node](https://cdn.jsdelivr.net/gh/taminhhienmor/node-red-contrib-firebase-data/source/image/remove1.png)
+
+        6. Set Priority and setwithPrioty methods (PATCH)
+        This is because the Put method sets the priority for the child path. (Or to get the priority with GET)
+
+        ![setpriority-node](https://cdn.jsdelivr.net/gh/taminhhienmor/node-red-contrib-firebase-data/source/image/setpriority1.png)
+
+        7. Rename child path
+
+        ![rename-node](https://cdn.jsdelivr.net/gh/taminhhienmor/node-red-contrib-firebase-data/source/image/rename1.png)
+
+    </p>
 </script>
 
 

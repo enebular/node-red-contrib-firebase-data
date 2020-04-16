@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-firebase-data",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "author": "minh hien <taminhhien.mor.vn@gmail.com>",
   "description": "The simplest of simple nodes with firebase",
   "dependencies": {
@@ -30,9 +30,9 @@
   },
   "license": "MIT",
   "maintainers": [
-      {
-          "name": "minh hien",
-          "email": "taminhhien.mor.vn@gmail.com"
-      }
+    {
+      "name": "minh hien",
+      "email": "taminhhien.mor.vn@gmail.com"
+    }
   ]
 }

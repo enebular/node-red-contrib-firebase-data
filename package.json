@@ -5,7 +5,7 @@
   "description": "The simplest of simple nodes with firebase",
   "dependencies": {
     "request": "^2.88.0",
-    "googleapis": "48.0.0",
+    "googleapis": "65.0.0",
     "follow-redirects": "0.0.7"
   },
   "keywords": [

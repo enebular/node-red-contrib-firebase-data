@@ -4,9 +4,9 @@
   "author": "minh hien <taminhhien.mor.vn@gmail.com>",
   "description": "The simplest of simple nodes with firebase",
   "dependencies": {
-    "request": "^2.88.0",
-    "googleapis": "65.0.0",
-    "follow-redirects": "1.15.6"
+    "axios": "^1.10.0",
+    "follow-redirects": "1.15.6",
+    "googleapis": "65.0.0"
   },
   "overrides": {
     "tough-cookie": "4.1.4"

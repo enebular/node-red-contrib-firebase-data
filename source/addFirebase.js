@@ -1,4 +1,4 @@
-var request = require('request');
+var axios = require('axios');
 var {google} = require("googleapis");
 module.exports = function (RED) {
     "use strict";
@@ -22,7 +22,7 @@ module.exports = function (RED) {
         var url_params = "";
         var url_params_childpath = "";
 
-        node.on("input", function (msg) {
+        node.on("input", async function (msg) {
             node.status({});
             
             // select method 
@@ -78,106 +78,92 @@ module.exports = function (RED) {
                 newObj = JSON.parse(newObj)
             };
 
-            if (firebaseCertificate.loginType == "jwt") {
-                // Define the required scopes.
-                var scopes = [
-                    "https://www.googleapis.com/auth/userinfo.email",
-                    "https://www.googleapis.com/auth/firebase.database"
-                ];
+            try {
+                if (firebaseCertificate.loginType == "jwt") {
+                    // Define the required scopes.
+                    var scopes = [
+                        "https://www.googleapis.com/auth/userinfo.email",
+                        "https://www.googleapis.com/auth/firebase.database"
+                    ];
 
-                var decoder = firebaseCertificate.secret.replace(/\\n/g,"\n")
-                var jwtClient = new google.auth.JWT(firebaseCertificate.email, null, decoder, scopes);
+                    var decoder = firebaseCertificate.secret.replace(/\\n/g,"\n")
+                    var jwtClient = new google.auth.JWT(firebaseCertificate.email, null, decoder, scopes);
 
-                // Use the JWT client to generate an access token.
-                jwtClient.authorize(function(error, tokens) {
-                    if (error) {
-                        node.error(error, {});
-                        node.status({fill: "red", shape: "ring", text: "Error making request to generate access token"});
-                        return;
-                    } else if (tokens.access_token === null) {
-                        node.error(error, {});
-                        node.status({fill: "red", shape: "ring", text: "Provided service account does not have permission to generate access tokens"});
-                        return;
-                    } else {
-                        var accessToken = tokens.access_token;
-                        url_params = firebaseCertificate.firebaseurl + childPath + jsonPath+"?access_token=" + accessToken
-                        url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath+"?access_token=" + accessToken
-                        requestData(newObj, methodValue, url_params, url_params_childpath, node, msg)
+                    // Use the JWT client to generate an access token.
+                    const tokens = await new Promise((resolve, reject) => {
+                        jwtClient.authorize((error, tokens) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(tokens);
+                            }
+                        });
+                    });
+
+                    if (tokens.access_token === null) {
+                        throw new Error("Provided service account does not have permission to generate access tokens");
                     }
-                });        
-            } else {
-                url_params = firebaseCertificate.firebaseurl + childPath + jsonPath
-                url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath
-                requestData(newObj, methodValue, url_params, url_params_childpath, node, msg)
+
+                    var accessToken = tokens.access_token;
+                    url_params = firebaseCertificate.firebaseurl + childPath + jsonPath+"?access_token=" + accessToken
+                    url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath+"?access_token=" + accessToken
+                    await requestData(newObj, methodValue, url_params, url_params_childpath, node, msg);
+                } else {
+                    url_params = firebaseCertificate.firebaseurl + childPath + jsonPath
+                    url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath
+                    await requestData(newObj, methodValue, url_params, url_params_childpath, node, msg);
+                }
+            } catch (error) {
+                node.error(error, {});
+                node.status({fill: "red", shape: "ring", text: "Error making request"});
             }
         });
     }
 
-    function requestData(newObj, methodValue, url_params, url_params_childpath, node, msg) {
-        if (methodValue == "reanameChildPath") {
-            var optsGet = {
-                method: "GET",
-                url: url_params
-            };
-            request(optsGet, function (errorGet, response, bodyGet) {
-                if (errorGet) {
-                    node.error(errorGet, {});
-                    node.status({fill: "red", shape: "ring", text: "failed"});
-                    return;
+    async function requestData(newObj, methodValue, url_params, url_params_childpath, node, msg) {
+        try {
+            if (methodValue == "reanameChildPath") {
+                // GET request to fetch data
+                const responseGet = await axios({
+                    method: "GET",
+                    url: url_params
+                });
+                
+                const dataClone = responseGet.data;
+                
+                // DELETE request to remove old data
+                await axios({
+                    method: "DELETE",
+                    url: url_params
+                });
+                
+                // PUT request to create new data
+                const responsePut = await axios({
+                    method: "PUT",
+                    url: url_params_childpath,
+                    data: dataClone
+                });
+                
+                msg.payload = responsePut.data;
+                node.send(msg);
+            } else {
+                const response = await axios({
+                    method: methodValue,
+                    url: url_params,
+                    data: newObj
+                });
+                
+                if (methodValue.toLowerCase() == "delete") {
+                    msg.payload = "Delete success!";
+                    node.send(msg);
                 } else {
-                    var dataClone = JSON.parse(bodyGet); 
-                    var optsDelete = {
-                        method: "DELETE",
-                        url: url_params
-                    };
-
-                    request(optsDelete, function (errorDelete, response, bodyDelete) {
-                        if (errorDelete) {
-                            node.error(errorDelete, {});
-                            node.status({fill: "red", shape: "ring", text: "failed"});
-                            return;
-                        } else {
-                            var optsPut = {
-                                method: "PUT",
-                                url: url_params_childpath,
-                                body: JSON.stringify(dataClone)
-                            };
-                            request(optsPut, function (errorPut, response, bodyPut) {
-                                if (errorPut) {
-                                    node.error(errorPut, {});
-                                    node.status({fill: "red", shape: "ring", text: "failed"});
-                                    return;
-                                } else {
-                                    msg.payload = JSON.parse(bodyPut);
-                                    node.send(msg);
-                                }    
-                            })
-                        }
-                    })
-                }    
-            })
-        } else {
-            var opts = {
-                method: methodValue,
-                url: url_params,
-                body: JSON.stringify(newObj)
-            };
-
-            request(opts, function (error, response, body) {
-                if (error) {
-                    node.error(error, {});
-                    node.status({fill: "red", shape: "ring", text: "failed"});
-                    return;
-                } else {
-                    if (methodValue == "delete") {
-                        msg.payload = "Delete success!"
-                        node.send(msg);
-                    } else {
-                        msg.payload =  JSON.parse(body);
-                        node.send(msg);
-                    }
-                }    
-            })
+                    msg.payload = response.data;
+                    node.send(msg);
+                }
+            }
+        } catch (error) {
+            node.error(error, {});
+            node.status({fill: "red", shape: "ring", text: "failed"});
         }
     }
 

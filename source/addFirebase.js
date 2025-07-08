@@ -79,22 +79,22 @@ module.exports = function (RED) {
             };
 
             try {
-                if (firebaseCertificate.loginType == "jwt") {
-                    // Define the required scopes.
-                    var scopes = [
-                        "https://www.googleapis.com/auth/userinfo.email",
-                        "https://www.googleapis.com/auth/firebase.database"
-                    ];
+            if (firebaseCertificate.loginType == "jwt") {
+                // Define the required scopes.
+                var scopes = [
+                    "https://www.googleapis.com/auth/userinfo.email",
+                    "https://www.googleapis.com/auth/firebase.database"
+                ];
 
-                    var decoder = firebaseCertificate.secret.replace(/\\n/g,"\n")
-                    var jwtClient = new google.auth.JWT(firebaseCertificate.email, null, decoder, scopes);
+                var decoder = firebaseCertificate.secret.replace(/\\n/g,"\n")
+                var jwtClient = new google.auth.JWT(firebaseCertificate.email, null, decoder, scopes);
 
-                    // Use the JWT client to generate an access token.
+                // Use the JWT client to generate an access token.
                     const tokens = await new Promise((resolve, reject) => {
                         jwtClient.authorize((error, tokens) => {
-                            if (error) {
+                    if (error) {
                                 reject(error);
-                            } else {
+                    } else {
                                 resolve(tokens);
                             }
                         });
@@ -104,13 +104,13 @@ module.exports = function (RED) {
                         throw new Error("Provided service account does not have permission to generate access tokens");
                     }
 
-                    var accessToken = tokens.access_token;
-                    url_params = firebaseCertificate.firebaseurl + childPath + jsonPath+"?access_token=" + accessToken
-                    url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath+"?access_token=" + accessToken
+                        var accessToken = tokens.access_token;
+                        url_params = firebaseCertificate.firebaseurl + childPath + jsonPath+"?access_token=" + accessToken
+                        url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath+"?access_token=" + accessToken
                     await requestData(newObj, methodValue, url_params, url_params_childpath, node, msg);
-                } else {
-                    url_params = firebaseCertificate.firebaseurl + childPath + jsonPath
-                    url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath
+            } else {
+                url_params = firebaseCertificate.firebaseurl + childPath + jsonPath
+                url_params_childpath = firebaseCertificate.firebaseurl + newchildpath + jsonPath
                     await requestData(newObj, methodValue, url_params, url_params_childpath, node, msg);
                 }
             } catch (error) {
@@ -122,45 +122,45 @@ module.exports = function (RED) {
 
     async function requestData(newObj, methodValue, url_params, url_params_childpath, node, msg) {
         try {
-            if (methodValue == "reanameChildPath") {
+        if (methodValue == "reanameChildPath") {
                 // GET request to fetch data
                 const responseGet = await axios({
-                    method: "GET",
-                    url: url_params
+                method: "GET",
+                url: url_params
                 });
                 
                 const dataClone = responseGet.data;
                 
                 // DELETE request to remove old data
                 await axios({
-                    method: "DELETE",
-                    url: url_params
+                        method: "DELETE",
+                        url: url_params
                 });
                 
                 // PUT request to create new data
                 const responsePut = await axios({
-                    method: "PUT",
-                    url: url_params_childpath,
+                                method: "PUT",
+                                url: url_params_childpath,
                     data: dataClone
                 });
                 
                 msg.payload = responsePut.data;
-                node.send(msg);
-            } else {
+                                    node.send(msg);
+        } else {
                 const response = await axios({
-                    method: methodValue,
-                    url: url_params,
+                method: methodValue,
+                url: url_params,
                     data: newObj
                 });
-                
+
                 if (methodValue.toLowerCase() == "delete") {
                     msg.payload = "Delete success!";
                     node.send(msg);
                 } else {
                     msg.payload = response.data;
-                    node.send(msg);
-                }
-            }
+                        node.send(msg);
+                    }
+                }    
         } catch (error) {
             node.error(error, {});
             node.status({fill: "red", shape: "ring", text: "failed"});

@@ -115,7 +115,7 @@ module.exports = function (RED) {
                 }
             } catch (error) {
                 node.error(error, {});
-                node.status({fill: "red", shape: "ring", text: "Error making request"});
+                node.status({fill: "red", shape: "ring", text: "Error making request to generate access token"});
             }
         });
     }

@@ -93,6 +93,7 @@ module.exports = function (RED) {
                     const tokens = await new Promise((resolve, reject) => {
                         jwtClient.authorize((error, tokens) => {
                             if (error) {
+                                node.status({fill: "red", shape: "ring", text: "Error making request to generate access token"});
                                 reject(error);
                             } else {
                                 resolve(tokens);
@@ -101,7 +102,9 @@ module.exports = function (RED) {
                     });
 
                     if (tokens.access_token === null) {
-                        throw new Error("Provided service account does not have permission to generate access tokens");
+                        const errorMessage = "Provided service account does not have permission to generate access tokens";
+                        node.status({fill: "red", shape: "ring", text: errorMessage});
+                        throw new Error(errorMessage);
                     }
 
                     var accessToken = tokens.access_token;
@@ -115,7 +118,6 @@ module.exports = function (RED) {
                 }
             } catch (error) {
                 node.error(error, {});
-                node.status({fill: "red", shape: "ring", text: "Error making request to generate access token"});
             }
         });
     }
